@@ -2,7 +2,55 @@
 require_once 'config.php';
 
 // Получаем ID страницы из параметра URL
-$page_id = isset($_GET['id']) ? $_GET['id'] : 'p1';
+$page_id = isset($_GET['id']) ? $_GET['id'] : null;
+
+// Если ID не указан, показываем страницу ошибки
+if (!$page_id) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Error</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #f5f5f5;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+            }
+            .error-container {
+                background: white;
+                padding: 40px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                text-align: center;
+                max-width: 500px;
+            }
+            h1 {
+                color: #e74c3c;
+                margin-bottom: 20px;
+            }
+            p {
+                color: #666;
+                line-height: 1.6;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <h1>Page Not Found</h1>
+            <p>The requested page or file was not found. Please check the URL and try again.</p>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
 
 // Получаем данные страницы из базы данных
 try {
@@ -11,21 +59,51 @@ try {
     $page = $stmt->fetch();
     
     if (!$page) {
-        // Если страница не найдена, показываем страницу по умолчанию
-        $page = [
-            'title' => 'Страница не найдена',
-            'description' => 'Запрашиваемая страница не существует',
-            'file_name' => 'Файл не найден',
-            'file_size' => '0 MB',
-            'file_os' => 'Неизвестно',
-            'file_memory' => 'Неизвестно',
-            'download_speed' => 'Неизвестно',
-            'download_link' => '#',
-            'file_source' => 'Неизвестно',
-            'file_control' => 'Неизвестно',
-            'file_password' => 'Неизвестно',
-            'file_extract' => 'Неизвестно'
-        ];
+        // Если страница не найдена в базе данных, показываем ошибку
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Error</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background: #f5f5f5;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    margin: 0;
+                }
+                .error-container {
+                    background: white;
+                    padding: 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    text-align: center;
+                    max-width: 500px;
+                }
+                h1 {
+                    color: #e74c3c;
+                    margin-bottom: 20px;
+                }
+                p {
+                    color: #666;
+                    line-height: 1.6;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="error-container">
+                <h1>Page Not Found</h1>
+                <p>The requested page or file was not found. Please check the URL and try again.</p>
+            </div>
+        </body>
+        </html>
+        <?php
+        exit;
     }
 } catch (PDOException $e) {
     die("Ошибка базы данных: " . $e->getMessage());
